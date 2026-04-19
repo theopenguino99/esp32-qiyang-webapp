@@ -1,0 +1,17 @@
+# Node / webapp
+webapp/node_modules/
+webapp/dist/
+webapp/.env.local
+webapp/.env.*.local
+
+# PlatformIO / firmware
+firmware/.pio/
+firmware/.vscode/
+
+# macOS
+.DS_Store
+
+# Editor
+*.swp
+*.swo
+.idea/
