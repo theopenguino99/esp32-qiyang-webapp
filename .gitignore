@@ -1,12 +1,8 @@
 # Node / webapp
-webapp/node_modules/
-webapp/dist/
-webapp/.env.local
-webapp/.env.*.local
-
-# PlatformIO / firmware
-firmware/.pio/
-firmware/.vscode/
+node_modules/
+dist/
+.env.local
+.env.*.local
 
 # macOS
 .DS_Store
