@@ -1,13 +1,18 @@
+/* Import Tailwind CSS utilities
+   Tailwind provides classes like "bg-blue-600", "text-white", "px-4" etc.
+   that you use directly in HTML instead of writing CSS */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* Global CSS resets - applied to all elements */
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+  margin: 0;  /* Remove default spacing */
+  padding: 0;  /* Remove default spacing */
+  box-sizing: border-box;  /* Make width/height calculations easier */
 }
 
+/* Global font styling */
 body {
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: system-ui, -apple-system, sans-serif;  /* Use system fonts for speed */
 }
