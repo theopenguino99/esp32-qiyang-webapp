@@ -20,7 +20,7 @@ export function useBLE() {
     try {
       setStatus('Connecting...')
       const dev = await navigator.bluetooth.requestDevice({
-        filters: [{ name: 'ESP32-C6' }],
+        acceptAllDevices: true,
         optionalServices: [NUS_SERVICE],
       })
 

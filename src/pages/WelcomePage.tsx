@@ -35,8 +35,8 @@ export default function WelcomePage() {
       <div className="welcome-hero">
         <div className="welcome-glow" />
         <h1 className="welcome-title">
-          <span className="welcome-title-qi">Qi</span>
-          <span className="welcome-title-yang">Yang</span>
+          <span className="welcome-title-crimp">crimp</span>
+          <span className="welcome-title-er">-ER</span>
         </h1>
         <p className="welcome-subtitle">Force Monitor</p>
         <p className="welcome-tagline">
