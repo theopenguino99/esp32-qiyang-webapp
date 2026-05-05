@@ -1,5 +1,5 @@
 import { createContext, useContext, type ReactNode } from 'react'
-import { useBLE, type ForceReading } from '../hooks/useBLE'
+import { useBLE, type ForceReading, type CalibrationData } from '../hooks/useBLE'
 
 interface BleContextType {
   readings: ForceReading[]
@@ -7,9 +7,13 @@ interface BleContextType {
   status: string
   device: BluetoothDevice | null
   latestForce: number
+  latestRawForce: number
+  calibration: CalibrationData
   connect: () => Promise<void>
   disconnect: () => Promise<void>
   resetReadings: () => void
+  updateCalibration: (cal: CalibrationData) => void
+  resetCalibration: () => void
 }
 
 const BleContext = createContext<BleContextType | null>(null)

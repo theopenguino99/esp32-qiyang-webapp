@@ -25,6 +25,22 @@ const categories = [
     path: '/rehab',
     gradient: 'welcome-card--rehab',
   },
+  {
+    id: 'calibration',
+    title: 'Calibration',
+    icon: '⚖️',
+    description: 'Calibrate your load cell for accurate force measurements',
+    path: '/calibration',
+    gradient: 'welcome-card--calibration',
+  },
+  {
+    id: 'custom',
+    title: 'Custom',
+    icon: '🛠️',
+    description: 'Build, save, and share your own training protocols',
+    path: '/custom',
+    gradient: 'welcome-card--custom',
+  },
 ]
 
 export default function WelcomePage() {

@@ -305,6 +305,90 @@ body {
   background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(245, 158, 11, 0.05));
 }
 
+.welcome-card--calibration::before {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(6, 182, 212, 0.05));
+}
+
+.welcome-card--custom::before {
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(139, 92, 246, 0.05));
+}
+
+/* ═══ CUSTOM PROTOCOLS ═══ */
+.custom-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 20px;
+  background: var(--bg-glass);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-sm);
+  padding: 4px;
+}
+
+.custom-tab {
+  flex: 1;
+  padding: 10px 8px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  font-family: var(--font);
+}
+
+.custom-tab:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.custom-tab--active {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.custom-name-input {
+  width: 100%;
+  padding: 10px 14px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-glass);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-size: 15px;
+  font-family: var(--font);
+  outline: none;
+  transition: var(--transition);
+}
+
+.custom-name-input:focus {
+  border-color: var(--accent-cyan);
+}
+
+.community-placeholder-features {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 24px;
+  text-align: left;
+  max-width: 320px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.community-feature {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--text-secondary);
+  padding: 8px 12px;
+  background: var(--bg-glass);
+  border: 1px solid var(--border-glass);
+  border-radius: 8px;
+}
+
+
 .welcome-card-icon {
   font-size: 36px;
   margin-bottom: 16px;
@@ -1006,6 +1090,124 @@ body {
   to {
     transform: scale(1);
   }
+}
+
+/* ═══ CALIBRATION ═══ */
+.calibration-warning {
+  text-align: center;
+  padding: 14px 20px;
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  border-radius: var(--radius-sm);
+  color: var(--accent-orange);
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 20px;
+}
+
+.calibration-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.calibration-status-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.calibration-stat {
+  background: var(--bg-secondary);
+  padding: 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border-glass);
+}
+
+.calibration-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.calibration-step-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  text-align: left;
+  padding: 16px 20px;
+  font-size: 16px;
+}
+
+.calibration-step-num {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.calibration-step-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+.calibration-sampling {
+  text-align: center;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.calibration-sampling-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--accent-cyan);
+  animation: pulse-dot 0.8s infinite;
+}
+
+.calibration-live-value {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--accent-cyan);
+  margin-top: 4px;
+}
+
+.calibration-result {
+  text-align: center;
+  padding: 20px;
+}
+
+.calibration-result-label {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.calibration-result-value {
+  font-size: 36px;
+  font-weight: 900;
+  color: var(--accent-green);
+  margin: 4px 0 8px;
+}
+
+.calibration-result-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 16px;
 }
 
 /* ═══ RESPONSIVE ═══ */

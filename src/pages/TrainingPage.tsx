@@ -15,7 +15,7 @@ const protocols = [
     description: 'Heavy load, long rest — pure max strength development',
     icon: '💪',
     path: '/training/max-hangs',
-    available: false,
+    available: true,
   },
   {
     id: 'density-hangs',
@@ -23,7 +23,7 @@ const protocols = [
     description: 'High volume sub-maximal hangs for tendon conditioning',
     icon: '🧱',
     path: '/training/density-hangs',
-    available: false,
+    available: true,
   },
 ]
 

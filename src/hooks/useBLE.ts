@@ -3,9 +3,28 @@ import { useState, useCallback, useRef } from 'react'
 const NUS_SERVICE = '6e400001-b5a3-f393-e0a9-e50e24dcca9e'
 const NUS_TX_CHAR = '6e400003-b5a3-f393-e0a9-e50e24dcca9e'
 
+const CALIBRATION_KEY = 'crimp-er-calibration'
+
 export interface ForceReading {
   time: number
   force: number
+}
+
+export interface CalibrationData {
+  offset: number      // raw value when no load applied
+  scaleFactor: number  // multiplier to correct raw-to-actual ratio
+}
+
+function loadCalibration(): CalibrationData {
+  try {
+    const saved = localStorage.getItem(CALIBRATION_KEY)
+    if (saved) return JSON.parse(saved)
+  } catch { /* ignore */ }
+  return { offset: 0, scaleFactor: 1 }
+}
+
+function saveCalibration(cal: CalibrationData) {
+  localStorage.setItem(CALIBRATION_KEY, JSON.stringify(cal))
 }
 
 export function useBLE() {
@@ -14,7 +33,15 @@ export function useBLE() {
   const [status, setStatus] = useState('Disconnected')
   const [device, setDevice] = useState<BluetoothDevice | null>(null)
   const [latestForce, setLatestForce] = useState(0)
+  const [latestRawForce, setLatestRawForce] = useState(0)
+  const [calibration, setCalibration] = useState<CalibrationData>(loadCalibration)
   const startTimeRef = useRef<number>(0)
+  const calibrationRef = useRef<CalibrationData>(loadCalibration())
+
+  const applyCalibration = (raw: number): number => {
+    const cal = calibrationRef.current
+    return Math.max(0, (raw - cal.offset) * cal.scaleFactor)
+  }
 
   const connect = useCallback(async () => {
     try {
@@ -32,6 +59,7 @@ export function useBLE() {
         setConnected(false)
         setStatus('Disconnected')
         setLatestForce(0)
+        setLatestRawForce(0)
       })
 
       try {
@@ -49,7 +77,9 @@ export function useBLE() {
         const text = new TextDecoder().decode(char.value).trim()
         const match = text.match(/([\d.]+)\s*kg/)
         if (match) {
-          const force = parseFloat(match[1])
+          const raw = parseFloat(match[1])
+          setLatestRawForce(raw)
+          const force = Math.round(applyCalibration(raw) * 100) / 100
           setLatestForce(force)
           const elapsed = (Date.now() - startTimeRef.current) / 1000
           setReadings((prev) => {
@@ -77,6 +107,7 @@ export function useBLE() {
       setStatus('Disconnected')
       setReadings([])
       setLatestForce(0)
+      setLatestRawForce(0)
     }
   }, [device])
 
@@ -85,14 +116,31 @@ export function useBLE() {
     startTimeRef.current = Date.now()
   }, [])
 
+  const updateCalibration = useCallback((cal: CalibrationData) => {
+    calibrationRef.current = cal
+    setCalibration(cal)
+    saveCalibration(cal)
+  }, [])
+
+  const resetCalibration = useCallback(() => {
+    const defaults: CalibrationData = { offset: 0, scaleFactor: 1 }
+    calibrationRef.current = defaults
+    setCalibration(defaults)
+    saveCalibration(defaults)
+  }, [])
+
   return {
     readings,
     connected,
     status,
     device,
     latestForce,
+    latestRawForce,
+    calibration,
     connect,
     disconnect,
     resetReadings,
+    updateCalibration,
+    resetCalibration,
   }
 }
