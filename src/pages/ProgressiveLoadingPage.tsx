@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useBleContext } from '../context/BleContext'
+import { useAuthContext } from '../context/AuthContext'
+import { saveSession } from '../lib/sessionSaver'
 import { playWorkBeep, playRestBeep, playDoneBeep, playCountdownBeep } from '../utils/audio'
 
 type Phase = 'config' | 'getReady' | 'work' | 'rest' | 'done'
@@ -8,6 +10,7 @@ type Phase = 'config' | 'getReady' | 'work' | 'rest' | 'done'
 export default function ProgressiveLoadingPage() {
   const navigate = useNavigate()
   const { connected, latestForce, resetReadings } = useBleContext()
+  const { user } = useAuthContext()
   const [holdTime, setHoldTime] = useState(10)
   const [restTime, setRestTime] = useState(60)
   const [steps, setSteps] = useState(5) // number of progressive increments
@@ -51,6 +54,15 @@ export default function ProgressiveLoadingPage() {
   },[holdTime,cd,resetReadings,finishStep])
   const stop = useCallback(()=>{clear();setPhase('config')},[clear])
   useEffect(()=>()=>clear(),[clear])
+
+  useEffect(() => {
+    if (phase === 'done') {
+      saveSession(user, {
+        protocol_type: 'progressive-loading', protocol_name: 'Progressive Loading',
+        config: { holdTime, restTime, steps, startPct, endPct, maxForce },
+      })
+    }
+  }, [phase])
 
   const pc:Record<Phase,string>={config:'',getReady:'phase--getready',work:'phase--work',rest:'phase--rest',done:'phase--done'}
 

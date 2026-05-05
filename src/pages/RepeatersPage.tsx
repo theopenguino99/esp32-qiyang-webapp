@@ -2,6 +2,8 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts'
 import { useBleContext } from '../context/BleContext'
+import { useAuthContext } from '../context/AuthContext'
+import { saveSession } from '../lib/sessionSaver'
 
 type Phase = 'config' | 'getReady' | 'work' | 'rest' | 'setRest' | 'done'
 
@@ -61,6 +63,7 @@ function playCountdownBeep() { playBeep(600, 100, 0.15) }
 export default function RepeatersPage() {
   const navigate = useNavigate()
   const { connected, latestForce, readings, resetReadings } = useBleContext()
+  const { user } = useAuthContext()
 
   const [config, setConfig] = useState<RepeatersConfig>(DEFAULT_CONFIG)
   const [phase, setPhase] = useState<Phase>('config')
@@ -79,15 +82,21 @@ export default function RepeatersPage() {
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const phaseRef = useRef<Phase>('config')
   const startTimeRef = useRef(0)
+  const currentRepRef = useRef(1)
+  const currentSetRef = useRef(1)
 
-  // Keep phaseRef in sync
+  // Keep refs in sync
   useEffect(() => { phaseRef.current = phase }, [phase])
+  useEffect(() => { currentRepRef.current = currentRep }, [currentRep])
+  useEffect(() => { currentSetRef.current = currentSet }, [currentSet])
 
-  // Track force readings during work phases
+  // Track force readings during active phases (work + rest + setRest for continuous chart)
   useEffect(() => {
+    if (phase === 'work' || phase === 'rest' || phase === 'setRest') {
+      setSetReadingsBuffer(prev => [...prev, { time: prev.length, force: latestForce }])
+    }
     if (phase === 'work') {
       setWorkReadings(prev => [...prev, { time: prev.length, force: latestForce }])
-      setSetReadingsBuffer(prev => [...prev, { time: prev.length, force: latestForce }])
     }
   }, [latestForce, phase])
 
@@ -134,6 +143,19 @@ export default function RepeatersPage() {
     setPhase('done')
   }, [clearTimer])
 
+  // Auto-save session on completion
+  useEffect(() => {
+    if (phase === 'done' && summaries.length > 0) {
+      const allForces = summaries.flatMap(s => [s.avgForce, s.peakForce])
+      saveSession(user, {
+        protocol_type: 'repeaters', protocol_name: 'Repeaters',
+        peak_force: Math.max(...summaries.map(s => s.peakForce)),
+        avg_force: summaries.reduce((a, s) => a + s.avgForce, 0) / summaries.length,
+        sets_data: summaries, config,
+      })
+    }
+  }, [phase])
+
   const startSetRest = useCallback(() => {
     // Save current set summary
     const setForces = workReadings.map(r => r.force)
@@ -160,7 +182,7 @@ export default function RepeatersPage() {
       setPhase('work')
       startCountdown(config.workTime, startRest)
     })
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentSet, config, workReadings, finishProtocol, startCountdown])
 
   const startRest = useCallback(() => {
@@ -177,7 +199,7 @@ export default function RepeatersPage() {
       setPhase('work')
       startCountdown(config.workTime, startRest)
     })
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentRep, config, startCountdown, startSetRest])
 
   // Rebuild startSetRest and startRest to avoid stale closures via refs
@@ -212,7 +234,7 @@ export default function RepeatersPage() {
   // Re-wire the startRest callback to use the ref for the recursive call
   useEffect(() => {
     startRestRef.current = () => {
-      if (currentRep >= config.repsPerSet) {
+      if (currentRepRef.current >= config.repsPerSet) {
         startSetRestRef.current()
         return
       }
@@ -231,14 +253,14 @@ export default function RepeatersPage() {
     startSetRestRef.current = () => {
       const setForces = workReadings.map(r => r.force)
       setSummaries(prev => [...prev, {
-        setNumber: currentSet,
+        setNumber: currentSetRef.current,
         avgForce: setForces.length > 0 ? setForces.reduce((a, b) => a + b, 0) / setForces.length : 0,
         peakForce: setForces.length > 0 ? Math.max(...setForces) : 0,
         readings: [...workReadings],
       }])
       setWorkReadings([])
 
-      if (currentSet >= config.numberOfSets) {
+      if (currentSetRef.current >= config.numberOfSets) {
         finishProtocol()
         return
       }
@@ -349,54 +371,54 @@ export default function RepeatersPage() {
               <div className="config-field">
                 <label>Work Time</label>
                 <div className="config-input-group">
-                  <button onClick={() => setConfig(c => ({...c, workTime: Math.max(1, c.workTime - 1)}))} className="config-btn">−</button>
+                  <button onClick={() => setConfig(c => ({ ...c, workTime: Math.max(1, c.workTime - 1) }))} className="config-btn">−</button>
                   <span className="config-value">{config.workTime}s</span>
-                  <button onClick={() => setConfig(c => ({...c, workTime: c.workTime + 1}))} className="config-btn">+</button>
+                  <button onClick={() => setConfig(c => ({ ...c, workTime: c.workTime + 1 }))} className="config-btn">+</button>
                 </div>
               </div>
 
               <div className="config-field">
                 <label>Rest Time</label>
                 <div className="config-input-group">
-                  <button onClick={() => setConfig(c => ({...c, restTime: Math.max(1, c.restTime - 1)}))} className="config-btn">−</button>
+                  <button onClick={() => setConfig(c => ({ ...c, restTime: Math.max(1, c.restTime - 1) }))} className="config-btn">−</button>
                   <span className="config-value">{config.restTime}s</span>
-                  <button onClick={() => setConfig(c => ({...c, restTime: c.restTime + 1}))} className="config-btn">+</button>
+                  <button onClick={() => setConfig(c => ({ ...c, restTime: c.restTime + 1 }))} className="config-btn">+</button>
                 </div>
               </div>
 
               <div className="config-field">
                 <label>Reps / Set</label>
                 <div className="config-input-group">
-                  <button onClick={() => setConfig(c => ({...c, repsPerSet: Math.max(1, c.repsPerSet - 1)}))} className="config-btn">−</button>
+                  <button onClick={() => setConfig(c => ({ ...c, repsPerSet: Math.max(1, c.repsPerSet - 1) }))} className="config-btn">−</button>
                   <span className="config-value">{config.repsPerSet}</span>
-                  <button onClick={() => setConfig(c => ({...c, repsPerSet: c.repsPerSet + 1}))} className="config-btn">+</button>
+                  <button onClick={() => setConfig(c => ({ ...c, repsPerSet: c.repsPerSet + 1 }))} className="config-btn">+</button>
                 </div>
               </div>
 
               <div className="config-field">
                 <label>Sets</label>
                 <div className="config-input-group">
-                  <button onClick={() => setConfig(c => ({...c, numberOfSets: Math.max(1, c.numberOfSets - 1)}))} className="config-btn">−</button>
+                  <button onClick={() => setConfig(c => ({ ...c, numberOfSets: Math.max(1, c.numberOfSets - 1) }))} className="config-btn">−</button>
                   <span className="config-value">{config.numberOfSets}</span>
-                  <button onClick={() => setConfig(c => ({...c, numberOfSets: c.numberOfSets + 1}))} className="config-btn">+</button>
+                  <button onClick={() => setConfig(c => ({ ...c, numberOfSets: c.numberOfSets + 1 }))} className="config-btn">+</button>
                 </div>
               </div>
 
               <div className="config-field">
                 <label>Set Rest</label>
                 <div className="config-input-group">
-                  <button onClick={() => setConfig(c => ({...c, restBetweenSets: Math.max(10, c.restBetweenSets - 10)}))} className="config-btn">−</button>
+                  <button onClick={() => setConfig(c => ({ ...c, restBetweenSets: Math.max(10, c.restBetweenSets - 10) }))} className="config-btn">−</button>
                   <span className="config-value">{formatTime(config.restBetweenSets)}</span>
-                  <button onClick={() => setConfig(c => ({...c, restBetweenSets: c.restBetweenSets + 10}))} className="config-btn">+</button>
+                  <button onClick={() => setConfig(c => ({ ...c, restBetweenSets: c.restBetweenSets + 10 }))} className="config-btn">+</button>
                 </div>
               </div>
 
               <div className="config-field">
                 <label>Target Force</label>
                 <div className="config-input-group">
-                  <button onClick={() => setConfig(c => ({...c, targetForce: Math.max(0, +(c.targetForce - 0.5).toFixed(1))}))} className="config-btn">−</button>
+                  <button onClick={() => setConfig(c => ({ ...c, targetForce: Math.max(0, +(c.targetForce - 0.5).toFixed(1)) }))} className="config-btn">−</button>
                   <span className="config-value">{config.targetForce > 0 ? `${config.targetForce} kg` : 'Off'}</span>
-                  <button onClick={() => setConfig(c => ({...c, targetForce: +(c.targetForce + 0.5).toFixed(1)}))} className="config-btn">+</button>
+                  <button onClick={() => setConfig(c => ({ ...c, targetForce: +(c.targetForce + 0.5).toFixed(1) }))} className="config-btn">+</button>
                 </div>
               </div>
             </div>
@@ -479,9 +501,9 @@ export default function RepeatersPage() {
                 strokeDashoffset={
                   2 * Math.PI * 54 * (1 - timeLeft / (
                     phase === 'getReady' ? 5 :
-                    phase === 'work' ? config.workTime :
-                    phase === 'rest' ? config.restTime :
-                    config.restBetweenSets
+                      phase === 'work' ? config.workTime :
+                        phase === 'rest' ? config.restTime :
+                          config.restBetweenSets
                   ))
                 }
                 strokeLinecap="round"

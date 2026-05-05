@@ -46,14 +46,47 @@ Two-point calibration: tare (zero offset) + known weight (scale factor). See [Ca
 
 Calibrated force = `(raw - offset) × scaleFactor`. Saved to `localStorage`.
 
-## Data Storage Placeholders
+## Cloud Storage (Supabase)
 
-The following features have TODO placeholders for future cloud storage integration:
-- User authentication (OAuth / email)
-- Sync custom protocols across devices
-- Community protocol sharing (upload, download, rate, review)
-- User profiles and training history
-- Protocol versioning and forking
+Exercise history is stored in Supabase (PostgreSQL). Sessions are auto-saved when protocols complete.
+
+### Setup
+
+1. Create a project at [supabase.com](https://supabase.com) (free tier)
+2. In the SQL editor, create the `exercise_sessions` table:
+   ```sql
+   CREATE TABLE exercise_sessions (
+     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+     user_id UUID REFERENCES auth.users(id) NOT NULL,
+     protocol_type TEXT NOT NULL,
+     protocol_name TEXT,
+     completed_at TIMESTAMPTZ DEFAULT now(),
+     duration_s INT,
+     peak_force REAL,
+     avg_force REAL,
+     sets_data JSONB,
+     config JSONB
+   );
+   ALTER TABLE exercise_sessions ENABLE ROW LEVEL SECURITY;
+   CREATE POLICY "Users see own sessions" ON exercise_sessions FOR ALL USING (auth.uid() = user_id);
+   ```
+3. In Supabase dashboard → Authentication → Settings, disable "Confirm email" for easier signup
+4. Copy your project URL and anon key, create `.env`:
+   ```
+   VITE_SUPABASE_URL=https://your-project.supabase.co
+   VITE_SUPABASE_ANON_KEY=your-anon-key
+   ```
+5. Restart dev server
+
+### Auth
+- Email + password (simplest, no email delivery needed)
+- Sign in via the button in the bottom status bar
+- App works fully offline without auth — cloud features are optional
+
+### Future Placeholders
+- Community protocol sharing (browse, import, rate)
+- User profiles and training logs
+- Cross-device sync
 
 ## BLE UUIDs
 

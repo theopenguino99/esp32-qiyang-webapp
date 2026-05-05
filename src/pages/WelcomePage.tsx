@@ -41,6 +41,14 @@ const categories = [
     path: '/custom',
     gradient: 'welcome-card--custom',
   },
+  {
+    id: 'history',
+    title: 'History',
+    icon: '📜',
+    description: 'View your past exercise sessions and track progress',
+    path: '/history',
+    gradient: 'welcome-card--history',
+  },
 ]
 
 export default function WelcomePage() {

@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts'
 import { useBleContext } from '../context/BleContext'
+import { useAuthContext } from '../context/AuthContext'
+import { saveSession } from '../lib/sessionSaver'
 import { playWorkBeep, playDoneBeep, playCountdownBeep } from '../utils/audio'
 
 type Phase = 'idle' | 'countdown' | 'testing' | 'done'
@@ -9,6 +11,7 @@ type Phase = 'idle' | 'countdown' | 'testing' | 'done'
 export default function MvcTestPage() {
   const navigate = useNavigate()
   const { connected, latestForce } = useBleContext()
+  const { user } = useAuthContext()
   const [phase, setPhase] = useState<Phase>('idle')
   const [countdown, setCountdown] = useState(3)
   const [timeLeft, setTimeLeft] = useState(5)
@@ -42,6 +45,17 @@ export default function MvcTestPage() {
   }
 
   useEffect(() => () => clear(), [])
+
+  useEffect(() => {
+    if (phase === 'done' && peak > 0) {
+      saveSession(user, {
+        protocol_type: 'mvc-test', protocol_name: 'MVC Test',
+        peak_force: peak,
+        avg_force: readings.length > 0 ? readings.reduce((a, r) => a + r.force, 0) / readings.length : 0,
+        duration_s: 5,
+      })
+    }
+  }, [phase])
 
   return (
     <div className="page-container">

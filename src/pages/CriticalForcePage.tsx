@@ -2,6 +2,8 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer, ReferenceLine } from 'recharts'
 import { useBleContext } from '../context/BleContext'
+import { useAuthContext } from '../context/AuthContext'
+import { saveSession } from '../lib/sessionSaver'
 import { playWorkBeep, playRestBeep, playDoneBeep, playCountdownBeep } from '../utils/audio'
 
 type Phase = 'config' | 'getReady' | 'work' | 'rest' | 'done'
@@ -10,6 +12,7 @@ type Phase = 'config' | 'getReady' | 'work' | 'rest' | 'done'
 export default function CriticalForcePage() {
   const navigate = useNavigate()
   const { connected, latestForce, resetReadings } = useBleContext()
+  const { user } = useAuthContext()
   const [reps, setReps] = useState(24)
   const [phase, setPhase] = useState<Phase>('config')
   const [timeLeft, setTimeLeft] = useState(0)
@@ -53,6 +56,18 @@ export default function CriticalForcePage() {
   },[cd,resetReadings,finishRep])
   const stop = useCallback(()=>{clear();setPhase('config')},[clear])
   useEffect(()=>()=>clear(),[clear])
+
+  useEffect(() => {
+    if (phase === 'done' && repAvgs.length > 0) {
+      const cf = repAvgs.length >= 6 ? repAvgs.slice(-6).reduce((a,b) => a+b, 0) / 6 : null
+      saveSession(user, {
+        protocol_type: 'critical-force', protocol_name: 'Critical Force',
+        peak_force: Math.max(...repAvgs),
+        avg_force: cf ?? repAvgs.reduce((a,b) => a+b, 0) / repAvgs.length,
+        sets_data: { repAvgs, cf }, config: { reps },
+      })
+    }
+  }, [phase])
 
   // Critical Force = average of last 6 rep averages
   const cf = repAvgs.length>=6 ? repAvgs.slice(-6).reduce((a,b)=>a+b,0)/6 : null

@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useBleContext } from '../context/BleContext'
+import { useAuthContext } from '../context/AuthContext'
+import { saveSession } from '../lib/sessionSaver'
 import { playWorkBeep, playRestBeep, playDoneBeep, playCountdownBeep } from '../utils/audio'
 
 const STORAGE_KEY = 'crimp-er-custom-protocols'
@@ -28,6 +30,7 @@ function saveProtocols(p: CustomProtocol[]) { localStorage.setItem(STORAGE_KEY, 
 export default function CustomPage() {
   const navigate = useNavigate()
   const { connected, latestForce, resetReadings } = useBleContext()
+  const { user } = useAuthContext()
   const [tab, setTab] = useState<'my' | 'create' | 'community' | 'run'>('my')
   const [protocols, setProtocols] = useState<CustomProtocol[]>(loadProtocols)
   const [editing, setEditing] = useState<CustomProtocol>({
@@ -85,6 +88,15 @@ export default function CustomPage() {
 
   const stopRun = useCallback(()=>{clear();setPhase('config');setTab('my')},[clear])
   useEffect(()=>()=>clear(),[clear])
+
+  useEffect(() => {
+    if (phase === 'done' && activeProtocol) {
+      saveSession(user, {
+        protocol_type: 'custom', protocol_name: activeProtocol.name,
+        config: activeProtocol,
+      })
+    }
+  }, [phase])
 
   const saveProtocol = () => {
     const p = { ...editing, id: Date.now().toString(), createdAt: Date.now() }

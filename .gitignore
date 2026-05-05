@@ -1,6 +1,7 @@
 # Node / webapp
 node_modules/
 dist/
+.env
 .env.local
 .env.*.local
 

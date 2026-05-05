@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts'
 import { useBleContext } from '../context/BleContext'
+import { useAuthContext } from '../context/AuthContext'
+import { saveSession } from '../lib/sessionSaver'
 import { playWorkBeep, playDoneBeep, playCountdownBeep } from '../utils/audio'
 
 type Phase = 'idle' | 'countdown' | 'testing' | 'done'
@@ -9,6 +11,7 @@ type Phase = 'idle' | 'countdown' | 'testing' | 'done'
 export default function RfdTestPage() {
   const navigate = useNavigate()
   const { connected, latestForce } = useBleContext()
+  const { user } = useAuthContext()
   const [phase, setPhase] = useState<Phase>('idle')
   const [countdown, setCountdown] = useState(3)
   const [timeLeft, setTimeLeft] = useState(3)
@@ -54,6 +57,16 @@ export default function RfdTestPage() {
       if (timeToPeak > 0) setRfd(readings[peakIdx].force / timeToPeak)
     }
   }, [phase, readings])
+
+  useEffect(() => {
+    if (phase === 'done' && peak > 0) {
+      saveSession(user, {
+        protocol_type: 'rfd', protocol_name: 'Rate of Force Development',
+        peak_force: peak, avg_force: rfd, duration_s: 3,
+        sets_data: { rfd, timeToPeak: peak > 0 && rfd > 0 ? peak / rfd : 0 },
+      })
+    }
+  }, [phase])
 
   useEffect(() => () => clear(), [])
 

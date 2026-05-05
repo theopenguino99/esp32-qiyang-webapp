@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useBleContext } from '../context/BleContext'
+import { useAuthContext } from '../context/AuthContext'
+import { saveSession } from '../lib/sessionSaver'
 import { playWorkBeep, playRestBeep, playDoneBeep, playCountdownBeep } from '../utils/audio'
 
 type Phase = 'config' | 'getReady' | 'work' | 'rest' | 'done'
@@ -8,6 +10,7 @@ type Phase = 'config' | 'getReady' | 'work' | 'rest' | 'done'
 export default function SubmaximalPage() {
   const navigate = useNavigate()
   const { connected, latestForce, resetReadings } = useBleContext()
+  const { user } = useAuthContext()
   const [holdTime, setHoldTime] = useState(30)
   const [restTime, setRestTime] = useState(60)
   const [sets, setSets] = useState(5)
@@ -44,6 +47,15 @@ export default function SubmaximalPage() {
   },[holdTime,cd,resetReadings,finishSet])
   const stop = useCallback(()=>{clear();setPhase('config')},[clear])
   useEffect(()=>()=>clear(),[clear])
+
+  useEffect(() => {
+    if (phase === 'done') {
+      saveSession(user, {
+        protocol_type: 'submaximal', protocol_name: 'Submaximal Isometrics',
+        config: { holdTime, restTime, sets, targetPct, maxForce, target },
+      })
+    }
+  }, [phase])
 
   const pc:Record<Phase,string>={config:'',getReady:'phase--getready',work:'phase--work',rest:'phase--rest',done:'phase--done'}
 

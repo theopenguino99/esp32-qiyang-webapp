@@ -1,5 +1,6 @@
 import { HashRouter, Routes, Route } from 'react-router-dom'
 import { BleProvider } from './context/BleContext'
+import { AuthProvider } from './context/AuthContext'
 import BleStatusBar from './components/BleStatusBar'
 import WelcomePage from './pages/WelcomePage'
 import TrainingPage from './pages/TrainingPage'
@@ -15,37 +16,41 @@ import ProgressiveLoadingPage from './pages/ProgressiveLoadingPage'
 import SubmaximalPage from './pages/SubmaximalPage'
 import CalibrationPage from './pages/CalibrationPage'
 import CustomPage from './pages/CustomPage'
+import HistoryPage from './pages/HistoryPage'
 
 export default function App() {
   return (
-    <BleProvider>
-      <HashRouter>
-        <div className="app-shell">
-          <BleStatusBar />
-          <main className="app-main">
-            <Routes>
-              <Route path="/" element={<WelcomePage />} />
-              {/* Training */}
-              <Route path="/training" element={<TrainingPage />} />
-              <Route path="/training/repeaters" element={<RepeatersPage />} />
-              <Route path="/training/max-hangs" element={<MaxHangsPage />} />
-              <Route path="/training/density-hangs" element={<DensityHangsPage />} />
-              {/* Testing */}
-              <Route path="/testing" element={<TestingPage />} />
-              <Route path="/testing/mvc" element={<MvcTestPage />} />
-              <Route path="/testing/critical-force" element={<CriticalForcePage />} />
-              <Route path="/testing/rfd" element={<RfdTestPage />} />
-              {/* Rehab */}
-              <Route path="/rehab" element={<RehabPage />} />
-              <Route path="/rehab/progressive-loading" element={<ProgressiveLoadingPage />} />
-              <Route path="/rehab/submaximal" element={<SubmaximalPage />} />
-              {/* Utilities */}
-              <Route path="/calibration" element={<CalibrationPage />} />
-              <Route path="/custom" element={<CustomPage />} />
-            </Routes>
-          </main>
-        </div>
-      </HashRouter>
-    </BleProvider>
+    <AuthProvider>
+      <BleProvider>
+        <HashRouter>
+          <div className="app-shell">
+            <BleStatusBar />
+            <main className="app-main">
+              <Routes>
+                <Route path="/" element={<WelcomePage />} />
+                {/* Training */}
+                <Route path="/training" element={<TrainingPage />} />
+                <Route path="/training/repeaters" element={<RepeatersPage />} />
+                <Route path="/training/max-hangs" element={<MaxHangsPage />} />
+                <Route path="/training/density-hangs" element={<DensityHangsPage />} />
+                {/* Testing */}
+                <Route path="/testing" element={<TestingPage />} />
+                <Route path="/testing/mvc" element={<MvcTestPage />} />
+                <Route path="/testing/critical-force" element={<CriticalForcePage />} />
+                <Route path="/testing/rfd" element={<RfdTestPage />} />
+                {/* Rehab */}
+                <Route path="/rehab" element={<RehabPage />} />
+                <Route path="/rehab/progressive-loading" element={<ProgressiveLoadingPage />} />
+                <Route path="/rehab/submaximal" element={<SubmaximalPage />} />
+                {/* Utilities */}
+                <Route path="/calibration" element={<CalibrationPage />} />
+                <Route path="/custom" element={<CustomPage />} />
+                <Route path="/history" element={<HistoryPage />} />
+              </Routes>
+            </main>
+          </div>
+        </HashRouter>
+      </BleProvider>
+    </AuthProvider>
   )
 }

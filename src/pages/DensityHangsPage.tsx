@@ -2,6 +2,8 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 import { useBleContext } from '../context/BleContext'
+import { useAuthContext } from '../context/AuthContext'
+import { saveSession } from '../lib/sessionSaver'
 import { playWorkBeep, playRestBeep, playDoneBeep, playCountdownBeep } from '../utils/audio'
 
 type Phase = 'config' | 'getReady' | 'work' | 'rest' | 'done'
@@ -17,6 +19,7 @@ const DEFAULT: DensityConfig = { hangTime: 7, restTime: 3, totalSets: 30 }
 export default function DensityHangsPage() {
   const navigate = useNavigate()
   const { connected, latestForce, resetReadings } = useBleContext()
+  const { user } = useAuthContext()
   const [config, setConfig] = useState<DensityConfig>(DEFAULT)
   const [phase, setPhase] = useState<Phase>('config')
   const [timeLeft, setTimeLeft] = useState(0)
@@ -57,6 +60,17 @@ export default function DensityHangsPage() {
   },[config,countdown,resetReadings,finishSet])
   const stop = useCallback(()=>{clear();setPhase('config');setBuf([])},[clear])
   useEffect(()=>()=>clear(),[clear])
+
+  useEffect(() => {
+    if (phase === 'done' && results.length > 0) {
+      saveSession(user, {
+        protocol_type: 'density-hangs', protocol_name: 'Density Hangs',
+        peak_force: Math.max(...results.map(r => r.peak)),
+        avg_force: results.reduce((a, r) => a + r.avg, 0) / results.length,
+        sets_data: results, config,
+      })
+    }
+  }, [phase])
 
   const pc:Record<Phase,string>={config:'',getReady:'phase--getready',work:'phase--work',rest:'phase--rest',done:'phase--done'}
 

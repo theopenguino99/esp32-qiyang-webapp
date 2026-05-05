@@ -2,6 +2,8 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts'
 import { useBleContext } from '../context/BleContext'
+import { useAuthContext } from '../context/AuthContext'
+import { saveSession } from '../lib/sessionSaver'
 import { playWorkBeep, playRestBeep, playDoneBeep, playCountdownBeep } from '../utils/audio'
 
 type Phase = 'config' | 'getReady' | 'work' | 'rest' | 'done'
@@ -29,6 +31,7 @@ const DEFAULT_CONFIG: MaxHangsConfig = {
 export default function MaxHangsPage() {
   const navigate = useNavigate()
   const { connected, latestForce, resetReadings } = useBleContext()
+  const { user } = useAuthContext()
 
   const [config, setConfig] = useState<MaxHangsConfig>(DEFAULT_CONFIG)
   const [phase, setPhase] = useState<Phase>('config')
@@ -121,6 +124,18 @@ export default function MaxHangsPage() {
   }, [clearTimer])
 
   useEffect(() => () => clearTimer(), [clearTimer])
+
+  // Auto-save session on completion
+  useEffect(() => {
+    if (phase === 'done' && results.length > 0) {
+      saveSession(user, {
+        protocol_type: 'max-hangs', protocol_name: 'Max Hangs',
+        peak_force: Math.max(...results.map(r => r.peakForce)),
+        avg_force: results.reduce((a, r) => a + r.avgForce, 0) / results.length,
+        sets_data: results, config,
+      })
+    }
+  }, [phase])
 
   const formatTime = (s: number) => {
     const mins = Math.floor(s / 60)
