@@ -227,7 +227,7 @@ export default function CustomPage() {
                 <div className="timer-text">{Math.ceil(timeLeft)}</div>
               </div>
               <div className="counters"><div className="counter"><span className="counter-label">Rep</span><span className="counter-value">{currentRep}/{activeProtocol.reps}</span></div><div className="counter"><span className="counter-label">Set</span><span className="counter-value">{currentSet}/{activeProtocol.sets}</span></div></div>
-              <div className="live-force"><span className="live-force-value">{latestForce.toFixed(1)}</span><span className="live-force-unit">kg</span></div>
+              <div className="live-force"><span className="live-force-value">{latestForce.toFixed(2)}</span><span className="live-force-unit">kg</span></div>
               <button className="btn btn--stop" onClick={stopRun}>Stop</button>
             </div>
           )}

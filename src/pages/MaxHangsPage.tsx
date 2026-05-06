@@ -228,7 +228,7 @@ export default function MaxHangsPage() {
             </div>
           </div>
           <div className="live-force">
-            <span className="live-force-value">{latestForce.toFixed(1)}</span>
+            <span className="live-force-value">{latestForce.toFixed(2)}</span>
             <span className="live-force-unit">kg</span>
           </div>
           {chartData.length > 2 && (
@@ -262,11 +262,11 @@ export default function MaxHangsPage() {
                 <div className="summary-set-stats">
                   <div>
                     <span className="stat-label">Avg Force</span>
-                    <span className="stat-value">{r.avgForce.toFixed(1)} kg</span>
+                    <span className="stat-value">{r.avgForce.toFixed(2)} kg</span>
                   </div>
                   <div>
                     <span className="stat-label">Peak Force</span>
-                    <span className="stat-value stat-value--peak">{r.peakForce.toFixed(1)} kg</span>
+                    <span className="stat-value stat-value--peak">{r.peakForce.toFixed(2)} kg</span>
                   </div>
                 </div>
               </div>
@@ -276,11 +276,11 @@ export default function MaxHangsPage() {
             <div className="summary-totals">
               <div className="summary-total-item">
                 <span className="stat-label">Best Peak</span>
-                <span className="stat-value stat-value--peak">{Math.max(...results.map(r => r.peakForce)).toFixed(1)} kg</span>
+                <span className="stat-value stat-value--peak">{Math.max(...results.map(r => r.peakForce)).toFixed(2)} kg</span>
               </div>
               <div className="summary-total-item">
                 <span className="stat-label">Avg of Peaks</span>
-                <span className="stat-value">{(results.reduce((a, r) => a + r.peakForce, 0) / results.length).toFixed(1)} kg</span>
+                <span className="stat-value">{(results.reduce((a, r) => a + r.peakForce, 0) / results.length).toFixed(2)} kg</span>
               </div>
             </div>
           )}

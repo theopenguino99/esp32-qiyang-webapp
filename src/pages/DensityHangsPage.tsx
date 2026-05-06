@@ -102,7 +102,7 @@ export default function DensityHangsPage() {
             <div className="timer-text">{Math.ceil(timeLeft)}</div>
           </div>
           <div className="counters"><div className="counter"><span className="counter-label">Set</span><span className="counter-value">{currentSet}/{config.totalSets}</span></div></div>
-          <div className="live-force"><span className="live-force-value">{latestForce.toFixed(1)}</span><span className="live-force-unit">kg</span></div>
+          <div className="live-force"><span className="live-force-value">{latestForce.toFixed(2)}</span><span className="live-force-unit">kg</span></div>
           {buf.length>2&&(<div className="repeaters-chart"><ResponsiveContainer width="100%" height={150}><LineChart data={buf.slice(-200)}><CartesianGrid strokeDasharray="3 3" stroke="#1e293b"/><XAxis dataKey="time" hide/><YAxis stroke="#64748b" domain={[0,'auto']}/><Tooltip contentStyle={{backgroundColor:'#0f172a',border:'1px solid #334155',borderRadius:'8px'}} labelStyle={{display:'none'}}/><Line type="monotone" dataKey="force" stroke="#3b82f6" dot={false} isAnimationActive={false} strokeWidth={2}/></LineChart></ResponsiveContainer></div>)}
           <button className="btn btn--stop" onClick={stop}>Stop Protocol</button>
         </div>
@@ -112,8 +112,8 @@ export default function DensityHangsPage() {
           <div className="summary-header"><div className="summary-checkmark">✓</div><h2>Density Hangs Complete!</h2></div>
           <div className="summary-totals">
             <div className="summary-total-item"><span className="stat-label">Total Sets</span><span className="stat-value">{results.length}</span></div>
-            <div className="summary-total-item"><span className="stat-label">Overall Avg</span><span className="stat-value">{(results.reduce((a,r)=>a+r.avg,0)/results.length).toFixed(1)} kg</span></div>
-            <div className="summary-total-item"><span className="stat-label">Session Peak</span><span className="stat-value stat-value--peak">{Math.max(...results.map(r=>r.peak)).toFixed(1)} kg</span></div>
+            <div className="summary-total-item"><span className="stat-label">Overall Avg</span><span className="stat-value">{(results.reduce((a,r)=>a+r.avg,0)/results.length).toFixed(2)} kg</span></div>
+            <div className="summary-total-item"><span className="stat-label">Session Peak</span><span className="stat-value stat-value--peak">{Math.max(...results.map(r=>r.peak)).toFixed(2)} kg</span></div>
           </div>
           <div className="summary-actions"><button className="btn btn--primary" onClick={()=>setPhase('config')}>New Session</button><button className="btn btn--secondary" onClick={()=>navigate('/training')}>Back to Training</button></div>
         </div>

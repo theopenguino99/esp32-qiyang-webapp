@@ -8,6 +8,7 @@ interface BleContextType {
   device: BluetoothDevice | null
   latestForce: number
   latestRawForce: number
+  samplingRate: number
   calibration: CalibrationData
   connect: () => Promise<void>
   disconnect: () => Promise<void>

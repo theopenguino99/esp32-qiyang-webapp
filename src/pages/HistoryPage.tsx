@@ -79,8 +79,8 @@ export default function HistoryPage() {
                 <h3 className="history-card-title">{s.protocol_name}</h3>
                 <p className="history-card-date">{formatDate(s.completed_at)}</p>
                 <div className="history-card-stats">
-                  {s.peak_force != null && <span className="history-stat">Peak: <strong>{s.peak_force.toFixed(1)} kg</strong></span>}
-                  {s.avg_force != null && <span className="history-stat">Avg: <strong>{s.avg_force.toFixed(1)} kg</strong></span>}
+                  {s.peak_force != null && <span className="history-stat">Peak: <strong>{s.peak_force.toFixed(2)} kg</strong></span>}
+                  {s.avg_force != null && <span className="history-stat">Avg: <strong>{s.avg_force.toFixed(2)} kg</strong></span>}
                   {s.duration_s != null && <span className="history-stat">{Math.floor(s.duration_s / 60)}:{(s.duration_s % 60).toString().padStart(2, '0')}</span>}
                 </div>
               </div>

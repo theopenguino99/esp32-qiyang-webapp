@@ -183,7 +183,7 @@ export default function CalibrationPage() {
               <label>Known Weight (kg)</label>
               <div className="config-input-group">
                 <button onClick={() => setKnownWeight(w => Math.max(0.5, +(w - 0.5).toFixed(1)))} className="config-btn">−</button>
-                <span className="config-value">{knownWeight.toFixed(1)} kg</span>
+                <span className="config-value">{knownWeight.toFixed(2)} kg</span>
                 <button onClick={() => setKnownWeight(w => +(w + 0.5).toFixed(1))} className="config-btn">+</button>
               </div>
             </div>

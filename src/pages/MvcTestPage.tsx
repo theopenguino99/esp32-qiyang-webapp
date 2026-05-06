@@ -90,8 +90,8 @@ export default function MvcTestPage() {
             <svg className="timer-ring" viewBox="0 0 120 120"><circle className="timer-ring-bg" cx="60" cy="60" r="54" fill="none" strokeWidth="6"/><circle className="timer-ring-progress" cx="60" cy="60" r="54" fill="none" strokeWidth="6" strokeDasharray={`${2*Math.PI*54}`} strokeDashoffset={2*Math.PI*54*(1-timeLeft/5)} strokeLinecap="round"/></svg>
             <div className="timer-text">{Math.ceil(timeLeft)}</div>
           </div>
-          <div className="live-force"><span className="live-force-value">{latestForce.toFixed(1)}</span><span className="live-force-unit">kg</span></div>
-          <div style={{fontSize:'14px',color:'var(--text-muted)'}}>Peak: {peak.toFixed(1)} kg</div>
+          <div className="live-force"><span className="live-force-value">{latestForce.toFixed(2)}</span><span className="live-force-unit">kg</span></div>
+          <div style={{fontSize:'14px',color:'var(--text-muted)'}}>Peak: {peak.toFixed(2)} kg</div>
         </div>
       )}
 
@@ -99,8 +99,8 @@ export default function MvcTestPage() {
         <div className="repeaters-summary">
           <div className="summary-header"><div className="summary-checkmark">✓</div><h2>MVC Test Complete</h2></div>
           <div className="summary-totals">
-            <div className="summary-total-item"><span className="stat-label">Peak Force (MVC)</span><span className="stat-value stat-value--peak">{peak.toFixed(1)} kg</span></div>
-            <div className="summary-total-item"><span className="stat-label">80% MVC</span><span className="stat-value">{(peak*0.8).toFixed(1)} kg</span></div>
+            <div className="summary-total-item"><span className="stat-label">Peak Force (MVC)</span><span className="stat-value stat-value--peak">{peak.toFixed(2)} kg</span></div>
+            <div className="summary-total-item"><span className="stat-label">80% MVC</span><span className="stat-value">{(peak*0.8).toFixed(2)} kg</span></div>
           </div>
           {readings.length > 2 && (
             <div className="repeaters-chart" style={{width:'100%'}}>

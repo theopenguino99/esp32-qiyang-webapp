@@ -102,7 +102,7 @@ export default function CriticalForcePage() {
             <div className="timer-text">{Math.ceil(timeLeft)}</div>
           </div>
           <div className="counters"><div className="counter"><span className="counter-label">Rep</span><span className="counter-value">{currentRep}/{reps}</span></div></div>
-          <div className="live-force"><span className="live-force-value">{latestForce.toFixed(1)}</span><span className="live-force-unit">kg</span></div>
+          <div className="live-force"><span className="live-force-value">{latestForce.toFixed(2)}</span><span className="live-force-unit">kg</span></div>
           <button className="btn btn--stop" onClick={stop}>Stop Test</button>
         </div>
       )}
@@ -111,8 +111,8 @@ export default function CriticalForcePage() {
         <div className="repeaters-summary">
           <div className="summary-header"><div className="summary-checkmark">✓</div><h2>Critical Force Test Complete</h2></div>
           <div className="summary-totals">
-            {cf!==null&&<div className="summary-total-item"><span className="stat-label">Critical Force</span><span className="stat-value stat-value--peak">{cf.toFixed(1)} kg</span></div>}
-            <div className="summary-total-item"><span className="stat-label">Peak Rep Avg</span><span className="stat-value">{repAvgs.length>0?Math.max(...repAvgs).toFixed(1):'—'} kg</span></div>
+            {cf!==null&&<div className="summary-total-item"><span className="stat-label">Critical Force</span><span className="stat-value stat-value--peak">{cf.toFixed(2)} kg</span></div>}
+            <div className="summary-total-item"><span className="stat-label">Peak Rep Avg</span><span className="stat-value">{repAvgs.length>0?Math.max(...repAvgs).toFixed(2):'—'} kg</span></div>
           </div>
           {repAvgs.length>1&&(
             <div className="repeaters-chart" style={{width:'100%'}}>
@@ -120,7 +120,7 @@ export default function CriticalForcePage() {
                 <LineChart data={repAvgs.map((v,i)=>({rep:i+1,force:v}))}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#1e293b"/><XAxis dataKey="rep" stroke="#64748b" label={{value:'Rep',position:'insideBottom',offset:-5,fill:'#64748b'}}/>
                   <YAxis stroke="#64748b" domain={[0,'auto']}/>
-                  {cf!==null&&<ReferenceLine y={cf} stroke="#f59e0b" strokeDasharray="6 4" strokeWidth={2} label={{value:`CF: ${cf.toFixed(1)}`,fill:'#f59e0b',fontSize:12}}/>}
+                  {cf!==null&&<ReferenceLine y={cf} stroke="#f59e0b" strokeDasharray="6 4" strokeWidth={2} label={{value:`CF: ${cf.toFixed(2)}`,fill:'#f59e0b',fontSize:12}}/>}
                   <Line type="monotone" dataKey="force" stroke="#3b82f6" strokeWidth={2}/>
                 </LineChart>
               </ResponsiveContainer>

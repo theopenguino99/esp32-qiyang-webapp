@@ -5,7 +5,7 @@ import { isSupabaseConfigured } from '../lib/supabase'
 import AuthModal from './AuthModal'
 
 export default function BleStatusBar() {
-  const { connected, status, latestForce, connect, disconnect } = useBleContext()
+  const { connected, status, latestForce, samplingRate, connect, disconnect } = useBleContext()
   const { user, signOut } = useAuthContext()
   const [showAuth, setShowAuth] = useState(false)
 
@@ -18,9 +18,15 @@ export default function BleStatusBar() {
         </div>
 
         {connected && (
-          <div className="ble-force-badge">
-            <span className="ble-force-value">{latestForce.toFixed(1)}</span>
-            <span className="ble-force-unit">kg</span>
+          <div className="ble-force-badges" style={{ display: 'flex', gap: '10px' }}>
+            <div className="ble-force-badge">
+              <span className="ble-force-value">{latestForce.toFixed(2)}</span>
+              <span className="ble-force-unit">kg</span>
+            </div>
+            <div className="ble-force-badge" title="Sampling Rate">
+              <span className="ble-force-value" style={{ fontSize: '14px', color: 'var(--text-secondary)' }}>{samplingRate}</span>
+              <span className="ble-force-unit">Hz</span>
+            </div>
           </div>
         )}
 

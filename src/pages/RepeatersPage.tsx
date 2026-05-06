@@ -442,13 +442,13 @@ export default function RepeatersPage() {
                 {mvcTesting && (
                   <div className="mvc-active">
                     <div className="mvc-label">PULL MAX!</div>
-                    <div className="mvc-peak">{mvcPeak.toFixed(1)} kg</div>
+                    <div className="mvc-peak">{mvcPeak.toFixed(2)} kg</div>
                   </div>
                 )}
                 {!mvcTesting && mvcCountdown <= 0 && mvcPeak > 0 && (
                   <div className="mvc-result">
-                    <div className="mvc-result-value">MVC: {mvcPeak.toFixed(1)} kg</div>
-                    <div className="mvc-result-target">80% Target: {(mvcPeak * 0.8).toFixed(1)} kg</div>
+                    <div className="mvc-result-value">MVC: {mvcPeak.toFixed(2)} kg</div>
+                    <div className="mvc-result-target">80% Target: {(mvcPeak * 0.8).toFixed(2)} kg</div>
                     <button className="btn btn--primary" onClick={applyMvc}>Apply as Target</button>
                   </div>
                 )}
@@ -526,7 +526,7 @@ export default function RepeatersPage() {
 
           {/* Live force display */}
           <div className="live-force">
-            <span className="live-force-value">{latestForce.toFixed(1)}</span>
+            <span className="live-force-value">{latestForce.toFixed(2)}</span>
             <span className="live-force-unit">kg</span>
             {config.targetForce > 0 && (
               <span className={`live-force-target ${latestForce >= config.targetForce ? 'on-target' : 'below-target'}`}>
@@ -577,11 +577,11 @@ export default function RepeatersPage() {
                 <div className="summary-set-stats">
                   <div>
                     <span className="stat-label">Avg Force</span>
-                    <span className="stat-value">{s.avgForce.toFixed(1)} kg</span>
+                    <span className="stat-value">{s.avgForce.toFixed(2)} kg</span>
                   </div>
                   <div>
                     <span className="stat-label">Peak Force</span>
-                    <span className="stat-value stat-value--peak">{s.peakForce.toFixed(1)} kg</span>
+                    <span className="stat-value stat-value--peak">{s.peakForce.toFixed(2)} kg</span>
                   </div>
                 </div>
               </div>
@@ -593,13 +593,13 @@ export default function RepeatersPage() {
               <div className="summary-total-item">
                 <span className="stat-label">Overall Avg</span>
                 <span className="stat-value">
-                  {(summaries.reduce((a, s) => a + s.avgForce, 0) / summaries.length).toFixed(1)} kg
+                  {(summaries.reduce((a, s) => a + s.avgForce, 0) / summaries.length).toFixed(2)} kg
                 </span>
               </div>
               <div className="summary-total-item">
                 <span className="stat-label">Session Peak</span>
                 <span className="stat-value stat-value--peak">
-                  {Math.max(...summaries.map(s => s.peakForce)).toFixed(1)} kg
+                  {Math.max(...summaries.map(s => s.peakForce)).toFixed(2)} kg
                 </span>
               </div>
             </div>

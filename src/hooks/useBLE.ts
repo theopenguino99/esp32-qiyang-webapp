@@ -34,9 +34,12 @@ export function useBLE() {
   const [device, setDevice] = useState<BluetoothDevice | null>(null)
   const [latestForce, setLatestForce] = useState(0)
   const [latestRawForce, setLatestRawForce] = useState(0)
+  const [samplingRate, setSamplingRate] = useState(0)
   const [calibration, setCalibration] = useState<CalibrationData>(loadCalibration)
   const startTimeRef = useRef<number>(0)
   const calibrationRef = useRef<CalibrationData>(loadCalibration())
+  const readingCountRef = useRef(0)
+  const lastRateUpdateRef = useRef(0)
 
   const applyCalibration = (raw: number): number => {
     const cal = calibrationRef.current
@@ -77,6 +80,16 @@ export function useBLE() {
         const text = new TextDecoder().decode(char.value).trim()
         const match = text.match(/([\d.]+)\s*kg/)
         if (match) {
+          readingCountRef.current += 1
+          const now = Date.now()
+          if (now - lastRateUpdateRef.current >= 1000) {
+            if (lastRateUpdateRef.current > 0) {
+              setSamplingRate(Math.round((readingCountRef.current * 1000) / (now - lastRateUpdateRef.current)))
+            }
+            readingCountRef.current = 0
+            lastRateUpdateRef.current = now
+          }
+
           const raw = parseFloat(match[1])
           setLatestRawForce(raw)
           const force = Math.round(applyCalibration(raw) * 100) / 100
@@ -136,6 +149,7 @@ export function useBLE() {
     device,
     latestForce,
     latestRawForce,
+    samplingRate,
     calibration,
     connect,
     disconnect,

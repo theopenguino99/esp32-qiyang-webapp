@@ -103,7 +103,7 @@ export default function ProgressiveLoadingPage() {
           </div>
           <div className="counters"><div className="counter"><span className="counter-label">Step</span><span className="counter-value">{currentStep}/{steps}</span></div></div>
           <div className="live-force">
-            <span className="live-force-value">{latestForce.toFixed(1)}</span><span className="live-force-unit">kg</span>
+            <span className="live-force-value">{latestForce.toFixed(2)}</span><span className="live-force-unit">kg</span>
             <span className={`live-force-target ${latestForce>=currentTarget?'on-target':'below-target'}`}>Target: {currentTarget} kg ({startPct + (endPct-startPct)*((currentStep-1)/Math.max(1,steps-1))}%)</span>
           </div>
           <button className="btn btn--stop" onClick={stop}>Stop</button>

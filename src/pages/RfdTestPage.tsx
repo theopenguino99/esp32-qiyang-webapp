@@ -101,7 +101,7 @@ export default function RfdTestPage() {
             <svg className="timer-ring" viewBox="0 0 120 120"><circle className="timer-ring-bg" cx="60" cy="60" r="54" fill="none" strokeWidth="6"/><circle className="timer-ring-progress" cx="60" cy="60" r="54" fill="none" strokeWidth="6" strokeDasharray={`${2*Math.PI*54}`} strokeDashoffset={2*Math.PI*54*(1-timeLeft/3)} strokeLinecap="round"/></svg>
             <div className="timer-text">{Math.ceil(timeLeft)}</div>
           </div>
-          <div className="live-force"><span className="live-force-value">{latestForce.toFixed(1)}</span><span className="live-force-unit">kg</span></div>
+          <div className="live-force"><span className="live-force-value">{latestForce.toFixed(2)}</span><span className="live-force-unit">kg</span></div>
         </div>
       )}
 
@@ -109,8 +109,8 @@ export default function RfdTestPage() {
         <div className="repeaters-summary">
           <div className="summary-header"><div className="summary-checkmark">✓</div><h2>RFD Test Complete</h2></div>
           <div className="summary-totals">
-            <div className="summary-total-item"><span className="stat-label">Peak Force</span><span className="stat-value stat-value--peak">{peak.toFixed(1)} kg</span></div>
-            <div className="summary-total-item"><span className="stat-label">RFD</span><span className="stat-value">{rfd.toFixed(1)} kg/s</span></div>
+            <div className="summary-total-item"><span className="stat-label">Peak Force</span><span className="stat-value stat-value--peak">{peak.toFixed(2)} kg</span></div>
+            <div className="summary-total-item"><span className="stat-label">RFD</span><span className="stat-value">{rfd.toFixed(2)} kg/s</span></div>
           </div>
           {readings.length>2&&(
             <div className="repeaters-chart" style={{width:'100%'}}>

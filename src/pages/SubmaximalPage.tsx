@@ -93,7 +93,7 @@ export default function SubmaximalPage() {
           </div>
           <div className="counters"><div className="counter"><span className="counter-label">Set</span><span className="counter-value">{currentSet}/{sets}</span></div></div>
           <div className="live-force">
-            <span className="live-force-value">{latestForce.toFixed(1)}</span><span className="live-force-unit">kg</span>
+            <span className="live-force-value">{latestForce.toFixed(2)}</span><span className="live-force-unit">kg</span>
             <span className={`live-force-target ${latestForce>=target*0.9?'on-target':'below-target'}`}>Target: {target} kg</span>
           </div>
           <button className="btn btn--stop" onClick={stop}>Stop</button>
