@@ -40,6 +40,7 @@ export function useBLE() {
   const calibrationRef = useRef<CalibrationData>(loadCalibration())
   const readingCountRef = useRef(0)
   const lastRateUpdateRef = useRef(0)
+  const lastRawRef = useRef<number | null>(null)
 
   const applyCalibration = (raw: number): number => {
     const cal = calibrationRef.current
@@ -91,13 +92,15 @@ export function useBLE() {
           }
 
           const raw = parseFloat(match[1])
+          if (lastRawRef.current !== null && raw === lastRawRef.current) return
+          lastRawRef.current = raw
           setLatestRawForce(raw)
           const force = Math.round(applyCalibration(raw) * 100) / 100
           setLatestForce(force)
           const elapsed = (Date.now() - startTimeRef.current) / 1000
           setReadings((prev) => {
             const updated = [...prev, { time: elapsed, force }]
-            return updated.slice(-2400) // keep last 30s at 80Hz
+            return updated.filter((r) => elapsed - r.time <= 30)
           })
         }
       })
