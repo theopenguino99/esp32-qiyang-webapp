@@ -1,6 +1,12 @@
-# ESP32 Force Monitor
+<div align="center">
 
-Minimal web app to display real-time force measurements from ESP32 via BLE.
+<img src="assets/banner.svg" alt="crimp-ER — Force Monitor" width="640" />
+
+**Real-time hangboard force monitor for ESP32 — train, test &amp; rehab your fingers over BLE.**
+
+</div>
+
+---
 
 ## Setup
 

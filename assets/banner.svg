@@ -1,0 +1,38 @@
+<svg width="860" height="240" viewBox="0 0 860 240" fill="none" xmlns="http://www.w3.org/2000/svg" font-family="Inter, system-ui, -apple-system, sans-serif">
+  <defs>
+    <linearGradient id="brand" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#3b82f6"/>
+      <stop offset="50%" stop-color="#06b6d4"/>
+      <stop offset="100%" stop-color="#8b5cf6"/>
+    </linearGradient>
+    <linearGradient id="curve" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#06b6d4" stop-opacity="0"/>
+      <stop offset="25%" stop-color="#06b6d4" stop-opacity="0.9"/>
+      <stop offset="60%" stop-color="#3b82f6" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#8b5cf6" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#0a0e1a" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Card background -->
+  <rect width="860" height="240" rx="20" fill="#0a0e1a"/>
+  <rect width="860" height="240" rx="20" fill="url(#glow)"/>
+  <rect x="0.5" y="0.5" width="859" height="239" rx="19.5" fill="none" stroke="#ffffff" stroke-opacity="0.08"/>
+
+  <!-- Force-curve motif: a hang rep (rise, plateau, release) -->
+  <path d="M70 168 L150 168 Q190 168 205 110 L235 70 Q250 56 270 56 L470 56 Q492 56 505 96 L535 158 Q548 172 568 172 L790 172"
+        fill="none" stroke="url(#curve)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Sample dots on the curve -->
+  <circle cx="270" cy="56" r="5" fill="#06b6d4"/>
+  <circle cx="470" cy="56" r="5" fill="#3b82f6"/>
+  <circle cx="790" cy="172" r="5" fill="#8b5cf6"/>
+
+  <!-- Wordmark -->
+  <text x="430" y="150" text-anchor="middle" font-size="76" font-weight="900" letter-spacing="-2" fill="url(#brand)">crimp-ER</text>
+
+  <!-- Tagline -->
+  <text x="430" y="196" text-anchor="middle" font-size="20" font-weight="600" letter-spacing="6" fill="#94a3b8">F O R C E &#160; M O N I T O R</text>
+</svg>
