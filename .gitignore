@@ -12,3 +12,6 @@ dist/
 *.swp
 *.swo
 .idea/
+
+# Claude Code
+CLAUDE.md
